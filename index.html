@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Peter Fitzpatrick</title>
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
+	<link href='https://fonts.googleapis.com/css?family=Hind|Montserrat:400,700' rel='stylesheet' type='text/css'>
+	<link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="./media/favicon.ico" type="image/x-icon">
+</head>
+<body onload="changeid()">
+	
+	<div id = "wrapper">
+		
+		<div id="header">
+			<a id="headlink" href="./index.html">Raid Developer</a>
+		</div>
+
+
+
+
+		<div id = "navcontainer">
+			<ul id = "navlist">
+				<li><a href="./index.html" id="active">Design Document</a></li>
+			</ul>
+		</div>
+
+		<script>
+			function changeid()
+			{
+				var e = document.getElementById("home");
+				e.id = "current";
+			}
+		</script>
+
+		<div id="content">
+			
+			<aside class="rightside">
+				<img src="./media/dalamud.png" alt="FFXIV Logo" width="200px"/>
+			</aside>
+
+			<article>
+				<h2>What is the Raid Developer?</h2>
+				<p>
+					This companion application to the MMO, Final Fantasy XIV, will serve to collect data on players of the game
+					as well as create teams to play together at scheduled times.
+				</p>
+				<p>
+					This will utilize the web services of <a href="https://github.com/viion/XIVPads-LodestoneAPI" id="active">XIVPads</a>
+					as well as <a href="http://www.programmableweb.com/api/google-calendar" id="active">Google Calendar</a> (This is
+					subject to change). XIVPads will collect character data, while Google Calendar will store anything related to date and time.
+				</p>
+				
+			</article>
+			
+
+			
+			<footer>
+			
+			</footer>
+		</div>
+		
+
+		
+	</div>
+
+</body>
+</html>
