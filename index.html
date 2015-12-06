@@ -9,6 +9,10 @@
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="src/lodestoneapi.js"></script>
+	
+	
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	
 </head>
 <body>
 	
@@ -38,7 +42,7 @@
 				<form id="character">
 				<fieldset>
 					<legend>Search Character:</legend>
-					<input name="name" id="name" type="text" value="Premium Virtue" placeholder="Character Name or ID">
+					<input name="name" id="name" type="text" value="Zeno Nalno" placeholder="Character Name or ID">
 					<select name="server" id="server">
 						<option value="Adamantoise">Adamantoise</option>
 						<option value="Aegis">Aegis</option>
@@ -97,7 +101,7 @@
 						<option value="Tonberry">Tonberry</option>
 						<option value="Typhon">Typhon</option>
 						<option value="Ultima">Ultima</option>
-						<option value="Ultros">Ultros</option>
+						<option value="Ultros" selected>Ultros</option>
 						<option value="Unicorn">Unicorn</option>
 						<option value="Valefor">Valefor</option>
 						<option value="Yojimbo">Yojimbo</option>
@@ -112,6 +116,8 @@
 			
 			<h1>Data Result</h1>
 			<pre id="data"></pre>
+				
+			<div id="chart_div"></div>
 				
 			</article>
 			
@@ -139,6 +145,8 @@ $(function() {
     // handle form submit
     $('form#character').on('submit', function(e)
     {
+		
+		
         e.preventDefault();
 
         var name = $(this).find('#name').val().trim(),
@@ -160,6 +168,7 @@ $(function() {
                 // print data
                 $data.empty();
                 $data.append(Character.name +' - '+ Character.world +'<br>');
+				$data.append('<img src=' +Character.portrait + '><br>');
                 $data.append('title: '+ Character.title +'<br>');
                 $data.append('----------------------<br>');
 
@@ -233,4 +242,52 @@ $(function() {
         });
     });
 });
+
+google.load('visualization', '1', {packages: ['corechart', 'bar']});
+google.setOnLoadCallback(drawBasic);
+	
+function drawBasic() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Class');
+      data.addColumn('number', 'Class Level');
+
+      data.addRows([
+        ['Archer', 1],
+		['Gladiator', 1],
+		['Lancer', 1],
+		['Marauder', 1],
+		['Pugilist', 1],
+		['Rogue', 1],
+		//['Arcanist', 1],
+		//['Conjurer', 1],
+		//['Thaumaturge', 1],
+		//['Dark Knight', 1],
+		//['Machinist', 1],
+		//['Astrologian', 1],
+      ]);
+
+      var options = {
+        title: 'Class Level per Base Class',
+		textStyle:{
+			fontSize: 10
+		},
+        hAxis: {
+          title: 'Class',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Class Level'
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(
+        document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+
 </script>
