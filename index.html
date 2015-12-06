@@ -137,7 +137,7 @@
 </body>
 </html>
 <script>
-$(function() {
+$(function drawBasic() {
 
     var $results = $('#results'),
         $data = $('#data');
@@ -161,16 +161,61 @@ $(function() {
             {
                 console.log('Found:', Character);
 
-                // print json
-                var json = JSON.stringify(Character, null, 4);
-                $results.text(json);
-
                 // print data
                 $data.empty();
                 $data.append(Character.name +' - '+ Character.world +'<br>');
 				$data.append('<img src=' +Character.portrait + '><br>');
                 $data.append('title: '+ Character.title +'<br>');
                 $data.append('----------------------<br>');
+
+	//function drawBasic() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Class');
+      data.addColumn('number', 'Class Level');
+
+      data.addRows([
+        ['Archer', 1],
+		['Gladiator', 1],
+		['Lancer', 1],
+		['Marauder', 1],
+		['Pugilist', 1],
+		['Rogue', 1],
+		//['Arcanist', 1],
+		//['Conjurer', 1],
+		//['Thaumaturge', 1],
+		//['Dark Knight', 1],
+		//['Machinist', 1],
+		//['Astrologian', 1],
+      ]);
+
+      var options = {
+        title: 'Class Level per Base Class',
+		textStyle:{
+			fontSize: 10
+		},
+        hAxis: {
+          title: 'Class',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Class Level'
+        }
+      };
+
+      var chart = new google.visualization.ColumnChart(
+        document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    //}
+
+
+
+
+
 
                 // print class jobs
                 $data.append('Class/Jobs<br>');
@@ -208,44 +253,13 @@ $(function() {
             $data.html('Could not find character');
         });
     });
-
-    // handle form submit
-    $('form#achievements').on('submit', function(e)
-    {
-        e.preventDefault();
-
-        var id = $(this).find('#id').val().trim();
-
-        $data.text('Getting achievements for: ' + id);
-
-        // Lodestone Search
-        LodestoneAPI.Search.Achievements(id, function(Achievements)
-        {
-            if (Achievements)
-            {
-                console.log(Achievements);
-
-                // print data
-                $data.empty();
-                $data.append('Points: ' + parseInt(Achievements.pointsCurrent) +'<br>');
-                $data.append('----------------------<br>');
-
-                // print json
-                var json = JSON.stringify(Achievements, null, 4);
-                $results.text(json);
-
-                // fin
-                return;
-            }
-
-            $data.html('Could not find achievementss');
-        });
-    });
 });
 
-google.load('visualization', '1', {packages: ['corechart', 'bar']});
-google.setOnLoadCallback(drawBasic);
-	
+
+
+/*
+REFERENCE FOR CHART
+
 function drawBasic() {
 
       var data = new google.visualization.DataTable();
@@ -289,5 +303,19 @@ function drawBasic() {
 
       chart.draw(data, options);
     }
+	*/
+
+//Code Below is what initializes the chart
+
+function initialize () {
+	//$('form#character').on('submit', function(e)
+    $('form#character').on('submit', function(e) {
+        drawBasic();
+		console.log("Got here");
+    });
+}
+
+google.load('visualization', '1', {packages: ['corechart', 'bar']});
+google.setOnLoadCallback(initialize);
 
 </script>
