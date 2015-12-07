@@ -165,6 +165,13 @@ $(function drawBasic() {
         var name = $(this).find('#name').val().trim(),
             server = $(this).find('#server').val().trim();
 		
+		//Clear past info for organizational purposes
+		document.getElementById('chart_div').style.display = 'none';
+		document.getElementById('chart2_div').style.display = 'none';
+		document.getElementById('chart3_div').style.display = 'none';
+		document.getElementById('classInfo').style.display = 'none';
+		document.getElementById('buttonwrapper').style.display = 'none';
+		
 		//Let user know that the system is working
         $data.text('Searching for: ' + name + ' on the server: ' + server);
 
@@ -310,6 +317,8 @@ $(function drawBasic() {
 				chart3.draw(data3, options3);
 			
 				//Gear info
+				//First clear class info
+				$classInfo.empty();
 				for(var i in Character.gear)
                 {
                     var set = Character.gear[i].gear,
