@@ -15,15 +15,11 @@
 	
 </head>
 <body>
-	
 	<div id = "wrapper">
 		
 		<div id="header">
 			<a id="headlink" href="./index.html">Character Searcher</a>
 		</div>
-
-
-
 
 		<div id = "navcontainer">
 			<ul id = "navlist">
@@ -35,9 +31,7 @@
 			
 		<img style="float:right;" src="./media/dalamud.png" alt="FFXIV Logo" width="200px"/>
 
-
 			<article>
-
 				<form id="character">
 				<fieldset>
 					<legend>Search Character:</legend>
@@ -112,251 +106,240 @@
 				</fieldset>
 			</form>
 			
-			<pre style="text-align:center; clear: both" id="data"></pre>
+			<div style="text-align:center; clear: both" id="data"></div>
 				
-			<div id="chart_div"></div>
+			<div id="chart_div" style="display: block"></div>
 			
-			<div id="chart2_div"></div>
+			<div id="chart2_div" style="display: none"></div>
 			
-			<div id="chart3_div"></div>
-				
+			<div id="chart3_div" style="display: none"></div>
+			
+			<div id="classInfo" style="display: none; height: 500px; font-size: 16px; background-color: white; padding: 1px 10px 0px 10px;"></div>
+			
+			<div id = "buttonwrapper" style = "margin-top: 2em; display: none">
+				<div class="button" style="cursor:pointer; width: 20%; text-align: center" id="1" onclick="swap('chart_div', '1')">Disciple of War</div>
+				<div class="button" style="cursor:pointer; width: 20%; text-align: center" id="2" onclick="swap('chart2_div', '2')">Disciple of Magic</div>
+				<div class="button" style="cursor:pointer; width: 20%; text-align: center" id="3" onclick="swap('chart3_div', '3')">Heavensward Classes</div>
+				<div class="button" style="cursor:pointer; width: 20%; text-align: center" id="4" onclick="swap('classInfo', '4')">Current Gear</div>
+			</div>
+			
 			</article>
-			
-			
-
-
 			
 			<footer>
 			
 			</footer>
 		</div>
-		
-
-		
+			
 	</div>
 
 </body>
 </html>
 <script>
+	
+function swap(info, button) {
+    document.getElementById('chart_div').style.display = 'none';
+    document.getElementById('chart2_div').style.display = 'none';
+    document.getElementById('chart3_div').style.display = 'none';
+    document.getElementById('classInfo').style.display = 'none';
+	
+	document.getElementById('1').style.backgroundColor = '#363636';
+    document.getElementById('2').style.backgroundColor = '#363636';
+    document.getElementById('3').style.backgroundColor = '#363636';
+    document.getElementById('4').style.backgroundColor = '#363636';
+	
+    document.getElementById(info).style.display = 'block';
+    document.getElementById(button).style.backgroundColor = '#C2C2C2';
+}
+	
+	
 $(function drawBasic() {
 
-    var $results = $('#results'),
-        $data = $('#data');
+    var $data = $('#data');
+		$classInfo = $('#classInfo');
 
     // handle form submit
     $('form#character').on('submit', function(e)
-    {
-		
-		console.log("IT IS " + localStorage.getItem("name"));
-		localStorage.setItem("name", $(this).find('#name').val().trim());
-		console.log("IT IS " + localStorage.getItem("name"));
-		
+    {	
         e.preventDefault();
 
         var name = $(this).find('#name').val().trim(),
             server = $(this).find('#server').val().trim();
-
+		
+		//Let user know that the system is working
         $data.text('Searching for: ' + name + ' on the server: ' + server);
 
         // Lodestone Search
+		//API for Final Fantasy XIV the MMO - Documentation is on my Design Doc
         LodestoneAPI.Search.Character(name, server, function(Character)
         {
             if (Character)
             {
                 console.log('Found:', Character);
+				//We found the character
+				//Initialize UI
+				document.getElementById('buttonwrapper').style.display = 'block';
+				swap('chart_div', '1');
 
                 // print data
+				//First clear any past data
                 $data.empty();
-                $data.append('<h2>' + Character.name +' - '+ Character.world +'</h2><br>');
+                $data.append('<h2>' + Character.name +' - '+ Character.activeJob +'</h2><br>');
 				$data.append('<img style="text-align:center;" src=' +Character.portrait + '><br>');
 				$data.append('<p>Free Company: ' + Character.freeCompany + '<p>');
 				$data.append('<p>Race: ' + Character.race + ' - ' + Character.clan + '<p><br>');
-	//function drawBasic() {
 
-	  //CHART 1 DATA
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Class');
-      data.addColumn('number', 'Class Level');
+				//CHART 1 DATA
+				//This is using google's charts API
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', 'Class');
+				data.addColumn('number', 'Class Level');
+			
+				data.addRows([
+					[Character.classjobs[0].name, Number(Character.classjobs[0].level)],
+					[Character.classjobs[1].name, Number(Character.classjobs[1].level)],
+					[Character.classjobs[2].name, Number(Character.classjobs[2].level)],
+					[Character.classjobs[3].name, Number(Character.classjobs[3].level)],
+					[Character.classjobs[4].name, Number(Character.classjobs[4].level)],
+					[Character.classjobs[5].name, Number(Character.classjobs[5].level)],
+				]);
+			
+				//CHART 1 OPTIONS
+				var options = {
+					colors: ['#9f2637'],
+					height: 500,
+					width: 1100,
+					title: 'Class Level for Disciple of War',
+					textStyle:{
+						fontSize: 10
+					},
+					hAxis: {
+					title: 'Class',
+					viewWindow: {
+						min: [7, 30, 0],
+						max: [17, 30, 0]
+					}
+					},
+					vAxis: {
+					title: 'Class Level',
+					viewWindow: {
+						max: 60
+					}
+					}
+				};
+				
+				//CHART 2 DATA
+				var data2 = new google.visualization.DataTable();
+				data2.addColumn('string', 'Class');
+				data2.addColumn('number', 'Class Level');
+			
+				data2.addRows([
+					[Character.classjobs[6].name, Number(Character.classjobs[6].level)],
+					[Character.classjobs[7].name, Number(Character.classjobs[7].level)],
+					[Character.classjobs[8].name, Number(Character.classjobs[8].level)],
+				]);
+			
+				//CHART 2 OPTIONS
+				var options2 = {
+					colors: ['#9f2637'],
+					height: 500,
+					width: 1100,
+					title: 'Class Level for Disciple of Magic',
+					textStyle:{
+						fontSize: 10
+					},
+					hAxis: {
+					title: 'Class',
+					viewWindow: {
+						min: [7, 30, 0],
+						max: [17, 30, 0]
+					}
+					},
+					vAxis: {
+					title: 'Class Level',
+					viewWindow: {
+						max: 60
+					}
+					}
+				};
+				
+				//CHART 3 DATA
+				var data3 = new google.visualization.DataTable();
+				data3.addColumn('string', 'Class');
+				data3.addColumn('number', 'Class Level');
+			
+				data3.addRows([
+					[Character.classjobs[9].name, Number(Character.classjobs[9].level)],
+					[Character.classjobs[10].name, Number(Character.classjobs[10].level)],
+					[Character.classjobs[11].name, Number(Character.classjobs[11].level)],
+				]);
+			
+				//CHART 3 OPTIONS
+				var options3 = {
+					colors: ['#9f2637'],
+					height: 500,
+					width: 1100,
+					title: 'Class Level for Heavensward Classes',
+					textStyle:{
+						fontSize: 10
+					},
+					hAxis: {
+					title: 'Class',
+					viewWindow: {
+						min: [7, 30, 0],
+						max: [17, 30, 0]
+					}
+					},
+					vAxis: {
+					title: 'Class Level',
+					viewWindow: {
+						max: 60
+					}
+					}
+				};
+			
+				var chart = new google.visualization.ColumnChart(
+					document.getElementById('chart_div'));
+				chart.draw(data, options);
+				
+				var chart2 = new google.visualization.ColumnChart(
+					document.getElementById('chart2_div'));
+				chart2.draw(data2, options2);
+				
+				var chart3 = new google.visualization.ColumnChart(
+					document.getElementById('chart3_div'));
+				chart3.draw(data3, options3);
+			
+				//Gear info
+				for(var i in Character.gear)
+                {
+                    var set = Character.gear[i].gear,
+                        ilv = Character.gear[i].gearStats.average,
+                        g = i.split('-'),
+                        c = g[0].toUpperCase(),
+                        j = (typeof g[1] == 'undefined') ? '' : g[1].toUpperCase();
 
-      data.addRows([
-        [Character.classjobs[0].name, Number(Character.classjobs[0].level)],
-		[Character.classjobs[1].name, Number(Character.classjobs[1].level)],
-		[Character.classjobs[2].name, Number(Character.classjobs[2].level)],
-		[Character.classjobs[3].name, Number(Character.classjobs[3].level)],
-		[Character.classjobs[4].name, Number(Character.classjobs[4].level)],
-		[Character.classjobs[5].name, Number(Character.classjobs[5].level)],
-      ]);
-
-	  //CHART 1 OPTIONS
-      var options = {
-		colors: ['#9f2637'],
-        title: 'Class Level for Disciple of War',
-		textStyle:{
-			fontSize: 10
-		},
-        hAxis: {
-          title: 'Class',
-          viewWindow: {
-            min: [7, 30, 0],
-            max: [17, 30, 0]
-          }
-        },
-        vAxis: {
-          title: 'Class Level',
-		  viewWindow: {
-			  max: 60
-		  }
-        }
-      };
-	  
-	  //CHART 2 DATA
-      var data2 = new google.visualization.DataTable();
-      data2.addColumn('string', 'Class');
-      data2.addColumn('number', 'Class Level');
-
-      data2.addRows([
-        [Character.classjobs[6].name, Number(Character.classjobs[6].level)],
-		[Character.classjobs[7].name, Number(Character.classjobs[7].level)],
-		[Character.classjobs[8].name, Number(Character.classjobs[8].level)],
-      ]);
-
-	  //CHART 2 OPTIONS
-      var options2 = {
-		colors: ['#9f2637'],
-        title: 'Class Level for Disciple of Magic',
-		textStyle:{
-			fontSize: 10
-		},
-        hAxis: {
-          title: 'Class',
-          viewWindow: {
-            min: [7, 30, 0],
-            max: [17, 30, 0]
-          }
-        },
-        vAxis: {
-          title: 'Class Level',
-		  viewWindow: {
-			  max: 60
-		  }
-        }
-      };
-	  
-	  //CHART 3 DATA
-      var data3 = new google.visualization.DataTable();
-      data3.addColumn('string', 'Class');
-      data3.addColumn('number', 'Class Level');
-
-      data3.addRows([
-        [Character.classjobs[9].name, Number(Character.classjobs[9].level)],
-		[Character.classjobs[10].name, Number(Character.classjobs[10].level)],
-		[Character.classjobs[11].name, Number(Character.classjobs[11].level)],
-      ]);
-
-	  //CHART 3 OPTIONS
-      var options3 = {
-		colors: ['#9f2637'],
-        title: 'Class Level for Heavensward Classes',
-		textStyle:{
-			fontSize: 10
-		},
-        hAxis: {
-          title: 'Class',
-          viewWindow: {
-            min: [7, 30, 0],
-            max: [17, 30, 0]
-          }
-        },
-        vAxis: {
-          title: 'Class Level',
-		  viewWindow: {
-			  max: 60
-		  }
-        }
-      };
-
-      var chart = new google.visualization.ColumnChart(
-        document.getElementById('chart_div'));
-      chart.draw(data, options);
-	  
-	  var chart2 = new google.visualization.ColumnChart(
-        document.getElementById('chart2_div'));
-      chart2.draw(data2, options2);
-	  
-	  var chart3 = new google.visualization.ColumnChart(
-        document.getElementById('chart3_div'));
-      chart3.draw(data3, options3);
-
-      // fin
-      return;
+                    // gear title
+                    $classInfo.append('<h1>Gear for: '+ c +' + '+ j +'<br>  Item Level: '+ ilv +'</h1><br>');
+                    for(var j in set)
+                    {
+                        g = set[j];
+                        $classInfo.append('		('+ g.slot +') '+ g.name +'<br>');
+                    }
+                    $classInfo.append('<br>');
+					break;
+					//We only want ACTIVE gear
+					//Anything we would loop through after is obsolete
+                }
+				// fin
+				return;
             }
-
-            $data.html('Could not find character');
+			//Let User know what's going on
+            $data.html('Could not find character. Try again.');
         });
     });
 });
 
-
-
-/*
-REFERENCE FOR CHART
-
-function drawBasic() {
-
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Class');
-      data.addColumn('number', 'Class Level');
-
-      data.addRows([
-        ['Archer', 1],
-		['Gladiator', 1],
-		['Lancer', 1],
-		['Marauder', 1],
-		['Pugilist', 1],
-		['Rogue', 1],
-		//['Arcanist', 1],
-		//['Conjurer', 1],
-		//['Thaumaturge', 1],
-		//['Dark Knight', 1],
-		//['Machinist', 1],
-		//['Astrologian', 1],
-      ]);
-
-      var options = {
-        title: 'Class Level per Base Class',
-		textStyle:{
-			fontSize: 10
-		},
-        hAxis: {
-          title: 'Class',
-          viewWindow: {
-            min: [7, 30, 0],
-            max: [17, 30, 0]
-          }
-        },
-        vAxis: {
-          title: 'Class Level'
-        }
-      };
-
-      var chart = new google.visualization.ColumnChart(
-        document.getElementById('chart_div'));
-
-      chart.draw(data, options);
-    }
-	*/
-
-//Code Below is what initializes the chart
-
-function initialize () {
-	//$('form#character').on('submit', function(e)
-    $('form#character').on('submit', function(e) {
-        drawBasic();
-		console.log("Got here");
-    });
-}
-
+//Info for Google Charts
 google.load('visualization', '1', {packages: ['corechart', 'bar']});
-google.setOnLoadCallback(initialize);
-
+google.setOnLoadCallback();
 </script>
