@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<title>Peter Fitzpatrick</title>
+	<title>Character Searcher - FFXIV</title>
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 	<link href='https://fonts.googleapis.com/css?family=Hind|Montserrat:400,700' rel='stylesheet' type='text/css'>
 
@@ -19,7 +19,7 @@
 	<div id = "wrapper">
 		
 		<div id="header">
-			<a id="headlink" href="./index.html">Raid Developer</a>
+			<a id="headlink" href="./index.html">Character Searcher</a>
 		</div>
 
 
@@ -27,18 +27,17 @@
 
 		<div id = "navcontainer">
 			<ul id = "navlist">
-				<li><a href="./index.html" id="active">Design Document</a></li>
+				<li><a href="./index.html" id="active">Home Page</a></li>
 			</ul>
 		</div>
 
 		<div id="content">
 			
-			<aside class="rightside">
-				<img src="./media/dalamud.png" alt="FFXIV Logo" width="200px"/>
-			</aside>
+		<img style="float:right;" src="./media/dalamud.png" alt="FFXIV Logo" width="200px"/>
+
 
 			<article>
-				<h2>Character Searcher</h2>
+
 				<form id="character">
 				<fieldset>
 					<legend>Search Character:</legend>
@@ -113,11 +112,13 @@
 				</fieldset>
 			</form>
 			
-			
-			<h1>Data Result</h1>
-			<pre id="data"></pre>
+			<pre style="text-align:center; clear: both" id="data"></pre>
 				
 			<div id="chart_div"></div>
+			
+			<div id="chart2_div"></div>
+			
+			<div id="chart3_div"></div>
 				
 			</article>
 			
@@ -146,6 +147,9 @@ $(function drawBasic() {
     $('form#character').on('submit', function(e)
     {
 		
+		console.log("IT IS " + localStorage.getItem("name"));
+		localStorage.setItem("name", $(this).find('#name').val().trim());
+		console.log("IT IS " + localStorage.getItem("name"));
 		
         e.preventDefault();
 
@@ -163,34 +167,30 @@ $(function drawBasic() {
 
                 // print data
                 $data.empty();
-                $data.append(Character.name +' - '+ Character.world +'<br>');
-				$data.append('<img src=' +Character.portrait + '><br>');
-                $data.append('title: '+ Character.title +'<br>');
-                $data.append('----------------------<br>');
-
+                $data.append('<h2>' + Character.name +' - '+ Character.world +'</h2><br>');
+				$data.append('<img style="text-align:center;" src=' +Character.portrait + '><br>');
+				$data.append('<p>Free Company: ' + Character.freeCompany + '<p>');
+				$data.append('<p>Race: ' + Character.race + ' - ' + Character.clan + '<p><br>');
 	//function drawBasic() {
 
+	  //CHART 1 DATA
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'Class');
       data.addColumn('number', 'Class Level');
 
       data.addRows([
-        ['Archer', 1],
-		['Gladiator', 1],
-		['Lancer', 1],
-		['Marauder', 1],
-		['Pugilist', 1],
-		['Rogue', 1],
-		//['Arcanist', 1],
-		//['Conjurer', 1],
-		//['Thaumaturge', 1],
-		//['Dark Knight', 1],
-		//['Machinist', 1],
-		//['Astrologian', 1],
+        [Character.classjobs[0].name, Number(Character.classjobs[0].level)],
+		[Character.classjobs[1].name, Number(Character.classjobs[1].level)],
+		[Character.classjobs[2].name, Number(Character.classjobs[2].level)],
+		[Character.classjobs[3].name, Number(Character.classjobs[3].level)],
+		[Character.classjobs[4].name, Number(Character.classjobs[4].level)],
+		[Character.classjobs[5].name, Number(Character.classjobs[5].level)],
       ]);
 
+	  //CHART 1 OPTIONS
       var options = {
-        title: 'Class Level per Base Class',
+		colors: ['#9f2637'],
+        title: 'Class Level for Disciple of War',
 		textStyle:{
 			fontSize: 10
 		},
@@ -202,52 +202,93 @@ $(function drawBasic() {
           }
         },
         vAxis: {
-          title: 'Class Level'
+          title: 'Class Level',
+		  viewWindow: {
+			  max: 60
+		  }
+        }
+      };
+	  
+	  //CHART 2 DATA
+      var data2 = new google.visualization.DataTable();
+      data2.addColumn('string', 'Class');
+      data2.addColumn('number', 'Class Level');
+
+      data2.addRows([
+        [Character.classjobs[6].name, Number(Character.classjobs[6].level)],
+		[Character.classjobs[7].name, Number(Character.classjobs[7].level)],
+		[Character.classjobs[8].name, Number(Character.classjobs[8].level)],
+      ]);
+
+	  //CHART 2 OPTIONS
+      var options2 = {
+		colors: ['#9f2637'],
+        title: 'Class Level for Disciple of Magic',
+		textStyle:{
+			fontSize: 10
+		},
+        hAxis: {
+          title: 'Class',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Class Level',
+		  viewWindow: {
+			  max: 60
+		  }
+        }
+      };
+	  
+	  //CHART 3 DATA
+      var data3 = new google.visualization.DataTable();
+      data3.addColumn('string', 'Class');
+      data3.addColumn('number', 'Class Level');
+
+      data3.addRows([
+        [Character.classjobs[9].name, Number(Character.classjobs[9].level)],
+		[Character.classjobs[10].name, Number(Character.classjobs[10].level)],
+		[Character.classjobs[11].name, Number(Character.classjobs[11].level)],
+      ]);
+
+	  //CHART 3 OPTIONS
+      var options3 = {
+		colors: ['#9f2637'],
+        title: 'Class Level for Heavensward Classes',
+		textStyle:{
+			fontSize: 10
+		},
+        hAxis: {
+          title: 'Class',
+          viewWindow: {
+            min: [7, 30, 0],
+            max: [17, 30, 0]
+          }
+        },
+        vAxis: {
+          title: 'Class Level',
+		  viewWindow: {
+			  max: 60
+		  }
         }
       };
 
       var chart = new google.visualization.ColumnChart(
         document.getElementById('chart_div'));
-
       chart.draw(data, options);
-    //}
+	  
+	  var chart2 = new google.visualization.ColumnChart(
+        document.getElementById('chart2_div'));
+      chart2.draw(data2, options2);
+	  
+	  var chart3 = new google.visualization.ColumnChart(
+        document.getElementById('chart3_div'));
+      chart3.draw(data3, options3);
 
-
-
-
-
-
-                // print class jobs
-                $data.append('Class/Jobs<br>');
-                for(var i in Character.classjobs)
-                {
-                    var cj = Character.classjobs[i];
-
-                    $data.append('    '+ cj.level +' '+ cj.name +', exp: '+ cj.exp_current +'/'+ cj.exp_level +'<br>');
-                }
-                $data.append('----------------------<br>');
-
-                // print gear
-                for(var i in Character.gear)
-                {
-                    var set = Character.gear[i].gear,
-                        ilv = Character.gear[i].gearStats.average,
-                        g = i.split('-'),
-                        c = g[0].toUpperCase(),
-                        j = (typeof g[1] == 'undefined') ? '' : g[1].toUpperCase();
-
-                    // gear title
-                    $data.append('Gear for: '+ c +' + '+ j +'  Item Level: '+ ilv +'<br>');
-                    for(var j in set)
-                    {
-                        g = set[j];
-                        $data.append('    ('+ g.slot +') '+ g.name +'<br>');
-                    }
-                    $data.append('<br>');
-                }
-
-                // fin
-                return;
+      // fin
+      return;
             }
 
             $data.html('Could not find character');
